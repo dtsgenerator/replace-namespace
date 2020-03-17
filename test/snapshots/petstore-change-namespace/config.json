@@ -1,3 +1,23 @@
-[
-  ["Test", "PetStore"]
-]
+{
+  "map": [
+    {
+      "from": [
+        "Components",
+        "Schemas"
+      ],
+      "to": [
+        "Test",
+        "PetStore"
+      ]
+    },
+    {
+      "from": [
+        "Paths"
+      ],
+      "to": [
+        "Test",
+        "PetStore"
+      ]
+    }
+  ]
+}

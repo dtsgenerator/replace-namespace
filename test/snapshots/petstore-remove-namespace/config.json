@@ -1,0 +1,13 @@
+{
+  "map": [
+    {
+      "from": [
+        true,
+        "Schemas"
+      ],
+      "to": [
+        "Test"
+      ]
+    }
+  ]
+}
