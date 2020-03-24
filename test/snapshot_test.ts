@@ -12,16 +12,16 @@ const configFileName = 'config.json';
 const expectedFileName = 'expected.d.ts';
 
 describe('Snapshot testing', () => {
-    fs.readdirSync(fixturesDir).map(caseName => {
+    fs.readdirSync(fixturesDir).map((caseName) => {
         const normalizedTestName = caseName.replace(/-/g, ' ');
-        it(`Test ${normalizedTestName}`, async function() {
+        it(`Test ${normalizedTestName}`, async function () {
             const fixtureDir = path.join(fixturesDir, caseName);
             const inputFilePath = path.join(fixtureDir, inputFileName);
             const configFilePath = path.join(fixtureDir, configFileName);
             const expectedFilePath = path.join(fixtureDir, expectedFileName);
 
             const inputContent = fs.readFileSync(inputFilePath, {
-                encoding: 'utf-8'
+                encoding: 'utf-8',
             });
             const input = ts.createSourceFile(
                 '',
@@ -33,7 +33,12 @@ describe('Snapshot testing', () => {
                 : {};
 
             const context = { option } as PluginContext;
-            const factory = await plugin.create(context);
+            const p = plugin.postProcess;
+            if (p == null) {
+                assert.fail('post process plugin is not configured.');
+                return;
+            }
+            const factory = await p(context);
             if (factory == null) {
                 assert.fail('factory is not returned.');
                 return;
@@ -51,7 +56,7 @@ describe('Snapshot testing', () => {
                 return;
             }
             const expected = fs.readFileSync(expectedFilePath, {
-                encoding: 'utf-8'
+                encoding: 'utf-8',
             });
             assert.equal(
                 actual,

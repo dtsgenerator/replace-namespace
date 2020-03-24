@@ -11,7 +11,21 @@ npm install @dtsgenerator/replace-namespace
 
 # Usage
 
-TBD
+`.dtsgenrc.json`
+```json
+{
+    "plugins": {
+        "@dtsgenerator/replace-namespace": {
+            "map": [
+                {
+                    "from": ["path1", "path2"],
+                    "to": ["replaced"]
+                }
+            ]
+        }
+    }
+}
+```
 
 # Configuration
 
@@ -25,12 +39,11 @@ type Config = {
 };
 ```
 
-| key | description |
-|-----|-------------|
-| map | the mapping of replacing. |
-| map.*n* | the mapping definition. |
-| map.*n*.from | the definition of from name. if this value is true, it treated as wildcard . |
-| map.*n*.to | the definition of to name. |
+| key | type | description |
+|-----|------|-------------|
+| map | Array of object | the mapping of replacing. |
+| map.*n*.from | `Array<string | boolean>` | the definition of from name. if this value is true, it treated as wildcard . |
+| map.*n*.to | `Array<string | boolean>` | the definition of to name. |
 
 
 - Example1

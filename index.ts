@@ -12,9 +12,9 @@ type Config = {
 
 const replaceNamespace: Plugin = {
     meta: {
-        description: 'Replace the namespace names.'
+        description: 'Replace the namespace names.',
     },
-    create
+    postProcess,
 };
 
 type MappingResult = string | string[] | undefined;
@@ -25,7 +25,7 @@ interface Mapping<K> {
     children: Mapping<K>[];
 }
 
-async function create(
+async function postProcess(
     pluginContext: PluginContext
 ): Promise<ts.TransformerFactory<ts.SourceFile> | undefined> {
     const config = pluginContext.option as Config;
@@ -72,12 +72,12 @@ function loadConfig(config: Config): Mapping<string | boolean>[] {
         let local = result;
         c.from.forEach((key, level) => {
             const value = getValue(c, level);
-            let map = local.find(m => m.key === key);
+            let map = local.find((m) => m.key === key);
             if (map == null) {
                 map = {
                     key,
                     value,
-                    children: []
+                    children: [],
                 };
                 local.push(map);
             } else if (map.value !== value) {
@@ -99,8 +99,8 @@ function getMapping<T extends string | boolean>(
     for (const p of path) {
         let work: Mapping<T>[] = [];
         result
-            .filter(map => map.key === true || map.key === p)
-            .forEach(map => {
+            .filter((map) => map.key === true || map.key === p)
+            .forEach((map) => {
                 work = work.concat(map.children);
             });
         result = work;
@@ -115,7 +115,7 @@ function getConvertedChild(
     if (converted == null) {
         return undefined;
     }
-    return converted.children.find(c => c.key === key);
+    return converted.children.find((c) => c.key === key);
 }
 function setConverted(
     converted: Mapping<string>,
@@ -124,13 +124,13 @@ function setConverted(
     value: MappingResult
 ): void {
     let local = converted;
-    path.forEach(key => {
+    path.forEach((key) => {
         let work = getConvertedChild(local, key);
         if (work == null) {
             work = {
                 key,
                 value: key,
-                children: []
+                children: [],
             };
             local.children.push(work);
         }
@@ -141,7 +141,7 @@ function setConverted(
         local.children.push({
             key,
             value,
-            children: []
+            children: [],
         });
     } else {
         work.value = value;
@@ -176,7 +176,7 @@ function replaceNamespaceDeclaration(
     const converted: Mapping<string> = {
         key: '',
         value: '',
-        children: []
+        children: [],
     };
 
     function replaceModuleName(
@@ -189,7 +189,7 @@ function replaceNamespaceDeclaration(
                 let dec = state;
                 const name = dec.name;
                 const map = maps.filter(
-                    m => m.key === true || m.key === name.text
+                    (m) => m.key === true || m.key === name.text
                 );
                 if (map.length === 0) {
                     result.push(dec);
@@ -199,7 +199,7 @@ function replaceNamespaceDeclaration(
                     setConverted(converted, path, name.text, value);
                     if (value == null) {
                         if (dec.body != null && ts.isModuleBlock(dec.body)) {
-                            dec.body.statements.forEach(s => result.push(s));
+                            dec.body.statements.forEach((s) => result.push(s));
                         }
                     } else if (Array.isArray(value)) {
                         setName(dec, value[0]);
