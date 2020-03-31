@@ -6,66 +6,138 @@ import plugin from '..';
 
 import assert = require('assert');
 
-const fixturesDir = path.join(__dirname, 'snapshots');
-const inputFileName = 'input.d.ts';
-const configFileName = 'config.json';
-const expectedFileName = 'expected.d.ts';
+describe('PreProcess Snapshot testing', () => {
+    const fixturesDir = path.join(__dirname, 'pre_snapshots');
+    const inputFileName = 'input.json';
+    const configFileName = 'config.json';
+    const expectedFileName = 'expected.json';
 
-describe('Snapshot testing', () => {
-    fs.readdirSync(fixturesDir).map((caseName) => {
-        const normalizedTestName = caseName.replace(/-/g, ' ');
-        it(`Test ${normalizedTestName}`, async function () {
-            const fixtureDir = path.join(fixturesDir, caseName);
-            const inputFilePath = path.join(fixtureDir, inputFileName);
-            const configFilePath = path.join(fixtureDir, configFileName);
-            const expectedFilePath = path.join(fixtureDir, expectedFileName);
+    fs.readdirSync(fixturesDir, { withFileTypes: true })
+        .filter((dirent) => dirent.isDirectory())
+        .map((dirent) => {
+            const caseName = dirent.name;
+            const normalizedTestName = caseName.replace(/-/g, ' ');
 
-            const inputContent = fs.readFileSync(inputFilePath, {
-                encoding: 'utf-8',
-            });
-            const input = ts.createSourceFile(
-                '',
-                inputContent,
-                ts.ScriptTarget.Latest
-            );
-            const option = fs.existsSync(configFilePath)
-                ? require(configFilePath)
-                : {};
+            it(`Test ${normalizedTestName}`, async function () {
+                const fixtureDir = path.join(fixturesDir, caseName);
+                const inputFilePath = path.join(fixtureDir, inputFileName);
+                const configFilePath = path.join(fixtureDir, configFileName);
+                const expectedFilePath = path.join(
+                    fixtureDir,
+                    expectedFileName
+                );
 
-            const context = { option } as PluginContext;
-            const p = plugin.postProcess;
-            if (p == null) {
-                assert.fail('post process plugin is not configured.');
-                return;
-            }
-            const factory = await p(context);
-            if (factory == null) {
-                assert.fail('factory is not returned.');
-                return;
-            }
+                const inputContent = fs.readFileSync(inputFilePath, {
+                    encoding: 'utf-8',
+                });
+                const input = JSON.parse(inputContent);
+                const option = fs.existsSync(configFilePath)
+                    ? require(configFilePath)
+                    : {};
 
-            const result = ts.transform(input, [factory]);
-            result.dispose();
-            const printer = ts.createPrinter();
-            const actual = printer.printFile(input);
+                const context = { option } as PluginContext;
+                const p = plugin.preProcess;
+                if (p == null) {
+                    assert.fail('pre process plugin is not configured.');
+                    return;
+                }
+                const handler = await p(context);
+                if (handler == null) {
+                    assert.fail('factory is not returned.');
+                    return;
+                }
 
-            // When we do `UPDATE_SNAPSHOT=1 npm test`, update snapshot data.
-            if (process.env.UPDATE_SNAPSHOT) {
-                fs.writeFileSync(expectedFilePath, actual);
-                this.skip();
-                return;
-            }
-            const expected = fs.readFileSync(expectedFilePath, {
-                encoding: 'utf-8',
-            });
-            assert.equal(
-                actual,
-                expected,
-                `
+                const result = handler(input);
+                const actual = JSON.stringify(result, null, 4);
+
+                // When we do `UPDATE_SNAPSHOT=1 npm test`, update snapshot data.
+                if (process.env.UPDATE_SNAPSHOT) {
+                    fs.writeFileSync(expectedFilePath, actual);
+                    this.skip();
+                    return;
+                }
+                const expected = fs.readFileSync(expectedFilePath, {
+                    encoding: 'utf-8',
+                });
+                assert.equal(
+                    actual,
+                    expected,
+                    `
 ${fixtureDir}
 ${actual}
 `
-            );
+                );
+            });
         });
-    });
+});
+
+describe('PostProcess Snapshot testing', () => {
+    const fixturesDir = path.join(__dirname, 'post_snapshots');
+    const inputFileName = 'input.d.ts';
+    const configFileName = 'config.json';
+    const expectedFileName = 'expected.d.ts';
+
+    fs.readdirSync(fixturesDir, { withFileTypes: true })
+        .filter((dirent) => dirent.isDirectory())
+        .map((dirent) => {
+            const caseName = dirent.name;
+            const normalizedTestName = caseName.replace(/-/g, ' ');
+
+            it(`Test ${normalizedTestName}`, async function () {
+                const fixtureDir = path.join(fixturesDir, caseName);
+                const inputFilePath = path.join(fixtureDir, inputFileName);
+                const configFilePath = path.join(fixtureDir, configFileName);
+                const expectedFilePath = path.join(
+                    fixtureDir,
+                    expectedFileName
+                );
+
+                const inputContent = fs.readFileSync(inputFilePath, {
+                    encoding: 'utf-8',
+                });
+                const input = ts.createSourceFile(
+                    '',
+                    inputContent,
+                    ts.ScriptTarget.Latest
+                );
+                const option = fs.existsSync(configFilePath)
+                    ? require(configFilePath)
+                    : {};
+
+                const context = { option } as PluginContext;
+                const p = plugin.postProcess;
+                if (p == null) {
+                    assert.fail('post process plugin is not configured.');
+                    return;
+                }
+                const factory = await p(context);
+                if (factory == null) {
+                    assert.fail('factory is not returned.');
+                    return;
+                }
+
+                const result = ts.transform(input, [factory]);
+                result.dispose();
+                const printer = ts.createPrinter();
+                const actual = printer.printFile(input);
+
+                // When we do `UPDATE_SNAPSHOT=1 npm test`, update snapshot data.
+                if (process.env.UPDATE_SNAPSHOT) {
+                    fs.writeFileSync(expectedFilePath, actual);
+                    this.skip();
+                    return;
+                }
+                const expected = fs.readFileSync(expectedFilePath, {
+                    encoding: 'utf-8',
+                });
+                assert.equal(
+                    actual,
+                    expected,
+                    `
+${fixtureDir}
+${actual}
+`
+                );
+            });
+        });
 });

@@ -12,6 +12,7 @@ type Config = {
 
 const replaceNamespace: Plugin = {
     meta: {
+        name: 'replace namespace',
         description: 'Replace the namespace names.',
     },
     postProcess,

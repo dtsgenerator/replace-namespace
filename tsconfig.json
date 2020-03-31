@@ -64,6 +64,7 @@
     "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
   },
   "exclude": [
-    "test/snapshots/"
+    "node_modules",
+    "test/post_snapshots/"
   ]
 }

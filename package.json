@@ -35,9 +35,9 @@
   "homepage": "https://github.com/dtsgenerator/replace-namespace#readme",
   "devDependencies": {
     "@types/mocha": "^7.0.2",
-    "@types/node": "^13.9.3",
-    "@typescript-eslint/eslint-plugin": "^2.25.0",
-    "@typescript-eslint/parser": "^2.25.0",
+    "@types/node": "^13.9.8",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
     "cross-env": "^7.0.2",
     "dtsgenerator": "^2.5.0",
     "eslint": "^6.8.0",
