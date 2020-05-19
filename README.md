@@ -1,7 +1,7 @@
 # @dtsgenerator/replace-namespace
 
 This is the `dtsgenerator` plugin.
-Replace matched namespace identifiers.
+Replace matched namespace identifiers by configuration.
 
 # Install
 
@@ -11,7 +11,7 @@ npm install @dtsgenerator/replace-namespace
 
 # Usage
 
-`.dtsgenrc.json`
+`dtsgen.json`
 ```json
 {
     "plugins": {

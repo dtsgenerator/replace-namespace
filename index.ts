@@ -10,10 +10,14 @@ type Config = {
     map: Replacer[];
 };
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const packageJson = require('./package.json');
+
 const replaceNamespace: Plugin = {
     meta: {
-        name: 'replace namespace',
-        description: 'Replace the namespace names.',
+        name: packageJson.name,
+        version: packageJson.version,
+        description: packageJson.description,
     },
     postProcess,
 };
