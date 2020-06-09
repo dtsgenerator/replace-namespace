@@ -35,19 +35,19 @@
   "homepage": "https://github.com/dtsgenerator/replace-namespace#readme",
   "devDependencies": {
     "@types/mocha": "^7.0.2",
-    "@types/node": "^12.12.39",
-    "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "@typescript-eslint/parser": "^2.34.0",
+    "@types/node": "^14.0.12",
+    "@typescript-eslint/eslint-plugin": "^3.2.0",
+    "@typescript-eslint/parser": "^3.2.0",
     "cross-env": "^7.0.2",
-    "dtsgenerator": "^2.6.0",
-    "eslint": "^7.0.0",
+    "dtsgenerator": "^3.0.1",
+    "eslint": "^7.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.3",
-    "mocha": "^7.1.2",
-    "nyc": "^15.0.1",
+    "mocha": "^7.2.0",
+    "nyc": "^15.1.0",
     "prettier": "^2.0.5",
-    "ts-node": "^8.10.1",
-    "typescript": "^3.9.2"
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
   },
   "dependencies": {
     "tslib": "^2.0.0"
