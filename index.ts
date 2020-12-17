@@ -236,7 +236,10 @@ function replaceNamespaceDeclaration(
             return node;
         }
 
-        node.statements = replaceModuleName(node.statements);
+        Object.assign<typeof node, Partial<typeof node>>(node, {
+            statements: replaceModuleName(node.statements),
+        });
+
         return node;
     }
     const inter = ts.visitNode(root, visit);
@@ -244,7 +247,9 @@ function replaceNamespaceDeclaration(
 }
 
 function setName(node: ts.ModuleDeclaration, name: string): void {
-    node.name = ts.createIdentifier(name);
+    Object.assign<typeof node, Partial<typeof node>>(node, {
+        name: ts.createIdentifier(name),
+    });
 }
 function addChildModuleDeclaration(
     parent: ts.ModuleDeclaration,
@@ -257,7 +262,9 @@ function addChildModuleDeclaration(
         parent.body,
         parent.flags
     );
-    parent.body = ts.createModuleBlock([newModule]);
+    Object.assign<typeof parent, Partial<typeof parent>>(parent, {
+        body: ts.createModuleBlock([newModule]),
+    });
     return newModule;
 }
 
@@ -275,7 +282,10 @@ function replaceTypeReference(
         const name = node.typeName;
         const names = flattenEntityName(name);
         const converted = convertNames(names, mapping);
-        node.typeName = packEntityName(converted);
+
+        Object.assign<typeof node, Partial<typeof node>>(node, {
+            typeName: packEntityName(converted),
+        });
 
         return node;
     }
@@ -326,7 +336,9 @@ function checkRootLevelModifiers(root: ts.SourceFile): ts.SourceFile {
         return ts.createNodeArray(result);
     }
     for (const state of root.statements) {
-        state.modifiers = replaceModifiers(state.modifiers);
+        Object.assign<typeof state, Partial<typeof state>>(state, {
+            modifiers: replaceModifiers(state.modifiers),
+        });
     }
     return root;
 }
