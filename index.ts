@@ -1,5 +1,24 @@
 import { Plugin, PluginContext } from 'dtsgenerator';
-import ts from 'typescript';
+import type {
+    EntityName,
+    Modifier,
+    ModifiersArray,
+    ModuleDeclaration,
+    Node,
+    NodeArray,
+    SourceFile,
+    Statement,
+    TransformationContext,
+    TransformerFactory,
+    VisitResult,
+} from 'typescript';
+
+const tsPath = require.resolve('typescript', {
+    paths: [require.resolve('dtsgenerator')],
+});
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const ts: typeof import('typescript') = require(tsPath);
 
 interface Replacer {
     from: (string | boolean)[];
@@ -32,15 +51,15 @@ interface Mapping<K> {
 
 async function postProcess(
     pluginContext: PluginContext
-): Promise<ts.TransformerFactory<ts.SourceFile> | undefined> {
+): Promise<TransformerFactory<SourceFile> | undefined> {
     const config = pluginContext.option as Config;
     if (!checkConfig(config)) {
         return undefined;
     }
     const mapping = loadConfig(config);
-    return (context: ts.TransformationContext) => (
-        root: ts.SourceFile
-    ): ts.SourceFile => {
+    return (context: TransformationContext) => (
+        root: SourceFile
+    ): SourceFile => {
         const [inter, converted] = replaceNamespaceDeclaration(
             context,
             mapping,
@@ -173,10 +192,10 @@ function convertNames(names: string[], converted: Mapping<string>): string[] {
 }
 
 function replaceNamespaceDeclaration(
-    context: ts.TransformationContext,
+    context: TransformationContext,
     mapping: Mapping<string | boolean>[],
-    root: ts.SourceFile
-): [ts.SourceFile, Mapping<string>] {
+    root: SourceFile
+): [SourceFile, Mapping<string>] {
     let path: string[] = [];
     const converted: Mapping<string> = {
         key: '',
@@ -185,10 +204,10 @@ function replaceNamespaceDeclaration(
     };
 
     function replaceModuleName(
-        statements: ReadonlyArray<ts.Statement>
-    ): ts.NodeArray<ts.Statement> {
+        statements: ReadonlyArray<Statement>
+    ): NodeArray<Statement> {
         const maps = getMapping(mapping, path);
-        const result: ts.Statement[] = [];
+        const result: Statement[] = [];
         for (const state of statements) {
             if (ts.isModuleDeclaration(state)) {
                 let dec = state;
@@ -223,7 +242,7 @@ function replaceNamespaceDeclaration(
         }
         return ts.createNodeArray(result);
     }
-    function visit(node: ts.Node): ts.VisitResult<ts.Node> {
+    function visit(node: Node): VisitResult<Node> {
         if (ts.isModuleDeclaration(node)) {
             const prev = path.concat();
             path.push(node.name.text);
@@ -243,13 +262,13 @@ function replaceNamespaceDeclaration(
     return [inter, converted];
 }
 
-function setName(node: ts.ModuleDeclaration, name: string): void {
+function setName(node: ModuleDeclaration, name: string): void {
     node.name = ts.createIdentifier(name);
 }
 function addChildModuleDeclaration(
-    parent: ts.ModuleDeclaration,
+    parent: ModuleDeclaration,
     name: string
-): ts.ModuleDeclaration {
+): ModuleDeclaration {
     const newModule = ts.createModuleDeclaration(
         undefined,
         undefined,
@@ -262,11 +281,11 @@ function addChildModuleDeclaration(
 }
 
 function replaceTypeReference(
-    context: ts.TransformationContext,
+    context: TransformationContext,
     mapping: Mapping<string>,
-    root: ts.SourceFile
-): ts.SourceFile {
-    function visit(node: ts.Node): ts.VisitResult<ts.Node> {
+    root: SourceFile
+): SourceFile {
+    function visit(node: Node): VisitResult<Node> {
         node = ts.visitEachChild(node, visit, context);
         if (!ts.isTypeReferenceNode(node)) {
             return node;
@@ -282,9 +301,9 @@ function replaceTypeReference(
     return ts.visitNode(root, visit);
 }
 
-function flattenEntityName(name: ts.EntityName): string[] {
+function flattenEntityName(name: EntityName): string[] {
     const result: string[] = [];
-    function visit(node: ts.Node): void {
+    function visit(node: Node): void {
         if (ts.isIdentifier(node)) {
             result.push(node.escapedText.toString());
         } else if (ts.isQualifiedName(node)) {
@@ -295,19 +314,17 @@ function flattenEntityName(name: ts.EntityName): string[] {
     visit(name);
     return result;
 }
-function packEntityName(names: string[]): ts.EntityName {
-    let result: ts.EntityName = ts.createIdentifier(names[0]);
+function packEntityName(names: string[]): EntityName {
+    let result: EntityName = ts.createIdentifier(names[0]);
     for (let i = 1; i < names.length; i++) {
         result = ts.createQualifiedName(result, ts.createIdentifier(names[i]));
     }
     return result;
 }
 
-function checkRootLevelModifiers(root: ts.SourceFile): ts.SourceFile {
-    function replaceModifiers(
-        modifiers?: ts.ModifiersArray
-    ): ts.ModifiersArray {
-        const result: ts.Modifier[] = [];
+function checkRootLevelModifiers(root: SourceFile): SourceFile {
+    function replaceModifiers(modifiers?: ModifiersArray): ModifiersArray {
+        const result: Modifier[] = [];
         let found = false;
         if (modifiers != null) {
             for (const m of modifiers) {
