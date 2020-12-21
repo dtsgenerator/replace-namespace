@@ -1,10 +1,14 @@
 import fs from 'fs';
 import path from 'path';
-import ts from 'typescript';
-import { PluginContext } from 'dtsgenerator';
+import { ts, PluginContext } from 'dtsgenerator';
 import plugin from '..';
 
 import assert = require('assert');
+
+const splitStringByNewLine = (input: string): string[] => {
+    const splitted = input.split(/\r?\n/);
+    return splitted ? splitted : [];
+}
 
 describe('PreProcess Snapshot testing', () => {
     const fixturesDir = path.join(__dirname, 'pre_snapshots');
@@ -48,7 +52,7 @@ describe('PreProcess Snapshot testing', () => {
                 }
 
                 const result = handler(input);
-                const actual = JSON.stringify(result, null, 4);
+                const actual = JSON.stringify(result, null, 2);
 
                 // When we do `UPDATE_SNAPSHOT=1 npm test`, update snapshot data.
                 if (process.env.UPDATE_SNAPSHOT) {
@@ -59,9 +63,9 @@ describe('PreProcess Snapshot testing', () => {
                 const expected = fs.readFileSync(expectedFilePath, {
                     encoding: 'utf-8',
                 });
-                assert.equal(
-                    actual,
-                    expected,
+                assert.deepStrictEqual(
+                    splitStringByNewLine(actual),
+                    splitStringByNewLine(expected),
                     `
 ${fixtureDir}
 ${actual}
@@ -96,9 +100,11 @@ describe('PostProcess Snapshot testing', () => {
                     encoding: 'utf-8',
                 });
                 const input = ts.createSourceFile(
-                    '',
+                    '_.d.ts',
                     inputContent,
-                    ts.ScriptTarget.Latest
+                    ts.ScriptTarget.Latest,
+                    false,
+                    ts.ScriptKind.TS
                 );
                 const option = fs.existsSync(configFilePath)
                     ? require(configFilePath)
@@ -130,9 +136,9 @@ describe('PostProcess Snapshot testing', () => {
                 const expected = fs.readFileSync(expectedFilePath, {
                     encoding: 'utf-8',
                 });
-                assert.equal(
-                    actual,
-                    expected,
+                assert.deepStrictEqual(
+                    splitStringByNewLine(actual),
+                    splitStringByNewLine(expected),
                     `
 ${fixtureDir}
 ${actual}

@@ -1,5 +1,4 @@
-import { Plugin, PluginContext } from 'dtsgenerator';
-import ts from 'typescript';
+import { ts, Plugin, PluginContext } from 'dtsgenerator';
 
 interface Replacer {
     from: (string | boolean)[];
