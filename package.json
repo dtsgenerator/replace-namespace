@@ -1,6 +1,6 @@
 {
   "name": "@dtsgenerator/replace-namespace",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "replace the namespace names",
   "main": "index.js",
   "publishConfig": {
