@@ -220,7 +220,7 @@ function replaceNamespaceDeclaration(
                 result.push(state);
             }
         }
-        return ts.createNodeArray(result);
+        return ts.factory.createNodeArray(result);
     }
     function visit(node: ts.Node): ts.VisitResult<ts.Node> {
         if (ts.isModuleDeclaration(node)) {
@@ -247,22 +247,22 @@ function replaceNamespaceDeclaration(
 
 function setName(node: ts.ModuleDeclaration, name: string): void {
     Object.assign<typeof node, Partial<typeof node>>(node, {
-        name: ts.createIdentifier(name),
+        name: ts.factory.createIdentifier(name),
     });
 }
 function addChildModuleDeclaration(
     parent: ts.ModuleDeclaration,
     name: string
 ): ts.ModuleDeclaration {
-    const newModule = ts.createModuleDeclaration(
+    const newModule = ts.factory.createModuleDeclaration(
         undefined,
         undefined,
-        ts.createIdentifier(name),
+        ts.factory.createIdentifier(name),
         parent.body,
         parent.flags
     );
     Object.assign<typeof parent, Partial<typeof parent>>(parent, {
-        body: ts.createModuleBlock([newModule]),
+        body: ts.factory.createModuleBlock([newModule]),
     });
     return newModule;
 }
@@ -305,9 +305,9 @@ function flattenEntityName(name: ts.EntityName): string[] {
     return result;
 }
 function packEntityName(names: string[]): ts.EntityName {
-    let result: ts.EntityName = ts.createIdentifier(names[0]);
+    let result: ts.EntityName = ts.factory.createIdentifier(names[0]);
     for (let i = 1; i < names.length; i++) {
-        result = ts.createQualifiedName(result, ts.createIdentifier(names[i]));
+        result = ts.factory.createQualifiedName(result, ts.factory.createIdentifier(names[i]));
     }
     return result;
 }
@@ -330,9 +330,9 @@ function checkRootLevelModifiers(root: ts.SourceFile): ts.SourceFile {
             }
         }
         if (!found) {
-            result.push(ts.createModifier(ts.SyntaxKind.DeclareKeyword));
+            result.push(ts.factory.createModifier(ts.SyntaxKind.DeclareKeyword));
         }
-        return ts.createNodeArray(result);
+        return ts.factory.createNodeArray(result);
     }
     for (const state of root.statements) {
         Object.assign<typeof state, Partial<typeof state>>(state, {
