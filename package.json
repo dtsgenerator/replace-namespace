@@ -40,6 +40,7 @@
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
     "cross-env": "^7.0.3",
+    "dtsgenerator": "^3.12.1",
     "eslint": "^7.31.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-typescript": "^2.4.0",
@@ -50,7 +51,8 @@
     "nyc": "^15.1.0",
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
-    "ts-node": "^10.1.0"
+    "ts-node": "^10.1.0",
+    "tslib": "^2.3.0"
   },
   "peerDependencies": {
     "dtsgenerator": "^3.12.1",
