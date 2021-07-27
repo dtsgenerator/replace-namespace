@@ -1,4 +1,5 @@
 .git/
+.github/
 .vscode/
 
 # for npm
@@ -15,9 +16,6 @@ test/
 .nyc_output/
 build/
 coverage/
-demo/
-greenkeeper.json
 *.tsbuildinfo
 
 npm-debug.log
-

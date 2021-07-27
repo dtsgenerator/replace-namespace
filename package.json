@@ -35,22 +35,25 @@
   },
   "homepage": "https://github.com/dtsgenerator/replace-namespace#readme",
   "devDependencies": {
-    "@types/mocha": "^8.2.0",
-    "@types/node": "^14.14.14",
-    "@typescript-eslint/eslint-plugin": "^4.11.0",
-    "@typescript-eslint/parser": "^4.11.0",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.4.3",
+    "@typescript-eslint/eslint-plugin": "^4.28.5",
+    "@typescript-eslint/parser": "^4.28.5",
     "cross-env": "^7.0.3",
-    "eslint": "^7.16.0",
-    "eslint-config-prettier": "^7.1.0",
-    "eslint-plugin-prettier": "^3.3.0",
-    "mocha": "^8.2.1",
+    "eslint": "^7.31.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
+    "mocha": "^9.0.3",
     "nyc": "^15.1.0",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
-    "ts-node": "^9.1.1"
+    "ts-node": "^10.1.0"
   },
-  "dependencies": {
-    "dtsgenerator": "^3.5.0",
-    "tslib": "^2.0.3"
+  "peerDependencies": {
+    "dtsgenerator": "^3.12.1",
+    "tslib": "^2.3.0"
   }
 }
