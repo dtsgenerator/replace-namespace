@@ -12,7 +12,6 @@ test/
 .coveralls.yml
 .editorconfig
 .gitignore
-.travis.yml
 .nyc_output/
 build/
 coverage/

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { ts, PluginContext } from 'dtsgenerator';
+import { ts, PluginContext, parseSchema, JsonSchema } from 'dtsgenerator';
 import plugin from '..';
 
 import assert = require('assert');
@@ -8,7 +8,7 @@ import assert = require('assert');
 const splitStringByNewLine = (input: string): string[] => {
     const splitted = input.split(/\r?\n/);
     return splitted ? splitted : [];
-}
+};
 
 describe('PreProcess Snapshot testing', () => {
     const fixturesDir = path.join(__dirname, 'pre_snapshots');
@@ -34,8 +34,13 @@ describe('PreProcess Snapshot testing', () => {
                 const inputContent = fs.readFileSync(inputFilePath, {
                     encoding: 'utf-8',
                 });
-                const input = JSON.parse(inputContent);
-                const option = fs.existsSync(configFilePath)
+                const input = (JSON.parse(inputContent) as JsonSchema[]).map(
+                    (c) => parseSchema(c)
+                );
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const option: PluginContext['option'] = fs.existsSync(
+                    configFilePath
+                )
                     ? require(configFilePath)
                     : {};
 
@@ -106,7 +111,10 @@ describe('PostProcess Snapshot testing', () => {
                     false,
                     ts.ScriptKind.TS
                 );
-                const option = fs.existsSync(configFilePath)
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const option: PluginContext['option'] = fs.existsSync(
+                    configFilePath
+                )
                     ? require(configFilePath)
                     : {};
 

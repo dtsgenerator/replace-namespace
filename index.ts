@@ -9,8 +9,13 @@ type Config = {
     map: Replacer[];
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+const packageJson: {
+    name: string;
+    version: string;
+    description: string;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const packageJson = require('./package.json');
+} = require('./package.json');
 
 const replaceNamespace: Plugin = {
     meta: {
@@ -29,6 +34,7 @@ interface Mapping<K> {
     children: Mapping<K>[];
 }
 
+// eslint-disable-next-line @typescript-eslint/require-await
 async function postProcess(
     pluginContext: PluginContext
 ): Promise<ts.TransformerFactory<ts.SourceFile> | undefined> {
