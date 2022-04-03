@@ -1,13 +1,11 @@
+import assert = require('assert');
 import fs from 'fs';
 import path from 'path';
 import { ts, PluginContext, parseSchema, JsonSchema } from 'dtsgenerator';
 import plugin from '..';
 
-import assert = require('assert');
-
 const splitStringByNewLine = (input: string): string[] => {
-    const splitted = input.split(/\r?\n/);
-    return splitted ? splitted : [];
+    return input.split(/\r?\n/);
 };
 
 describe('PreProcess Snapshot testing', () => {

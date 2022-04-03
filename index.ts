@@ -14,7 +14,7 @@ const packageJson: {
     name: string;
     version: string;
     description: string;
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
 } = require('./package.json');
 
 const replaceNamespace: Plugin = {
@@ -43,21 +43,20 @@ async function postProcess(
         return undefined;
     }
     const mapping = loadConfig(config);
-    return (context: ts.TransformationContext) => (
-        root: ts.SourceFile
-    ): ts.SourceFile => {
-        const [inter, converted] = replaceNamespaceDeclaration(
-            context,
-            mapping,
-            root
-        );
-        const result = replaceTypeReference(context, converted, inter);
-        return checkRootLevelModifiers(result);
-    };
+    return (context: ts.TransformationContext) =>
+        (root: ts.SourceFile): ts.SourceFile => {
+            const [inter, converted] = replaceNamespaceDeclaration(
+                context,
+                mapping,
+                root
+            );
+            const result = replaceTypeReference(context, converted, inter);
+            return checkRootLevelModifiers(result);
+        };
 }
 
 function checkConfig(config: Config): boolean {
-    if (config == null || !('map' in config) || !Array.isArray(config.map)) {
+    if (!('map' in config) || !Array.isArray(config.map)) {
         console.error('Error: configuration is invalid.', config);
         return false;
     }
@@ -313,7 +312,10 @@ function flattenEntityName(name: ts.EntityName): string[] {
 function packEntityName(names: string[]): ts.EntityName {
     let result: ts.EntityName = ts.factory.createIdentifier(names[0]);
     for (let i = 1; i < names.length; i++) {
-        result = ts.factory.createQualifiedName(result, ts.factory.createIdentifier(names[i]));
+        result = ts.factory.createQualifiedName(
+            result,
+            ts.factory.createIdentifier(names[i])
+        );
     }
     return result;
 }
@@ -336,7 +338,9 @@ function checkRootLevelModifiers(root: ts.SourceFile): ts.SourceFile {
             }
         }
         if (!found) {
-            result.push(ts.factory.createModifier(ts.SyntaxKind.DeclareKeyword));
+            result.push(
+                ts.factory.createModifier(ts.SyntaxKind.DeclareKeyword)
+            );
         }
         return ts.factory.createNodeArray(result);
     }
