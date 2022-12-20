@@ -309,7 +309,7 @@ function flattenEntityName(name: ts.EntityName): string[] {
     visit(name);
     return result;
 }
-function packEntityName(names: string[]): ts.EntityName {
+function packEntityName(names: readonly string[]): ts.EntityName {
     let result: ts.EntityName = ts.factory.createIdentifier(names[0]);
     for (let i = 1; i < names.length; i++) {
         result = ts.factory.createQualifiedName(
@@ -322,7 +322,7 @@ function packEntityName(names: string[]): ts.EntityName {
 
 function checkRootLevelModifiers(root: ts.SourceFile): ts.SourceFile {
     function replaceModifiers(
-        modifiers?: ts.ModifiersArray
+        modifiers?: readonly ts.Modifier[]
     ): ts.ModifiersArray {
         const result: ts.Modifier[] = [];
         let found = false;
@@ -345,8 +345,11 @@ function checkRootLevelModifiers(root: ts.SourceFile): ts.SourceFile {
         return ts.factory.createNodeArray(result);
     }
     for (const state of root.statements) {
+        const modifiers = ts.canHaveModifiers(state)
+            ? ts.getModifiers(state)
+            : undefined;
         Object.assign<typeof state, Partial<typeof state>>(state, {
-            modifiers: replaceModifiers(state.modifiers),
+            modifiers: replaceModifiers(modifiers),
         });
     }
     return root;
