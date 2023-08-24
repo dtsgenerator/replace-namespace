@@ -42,8 +42,8 @@ type Config = {
 | key | type | description |
 |-----|------|-------------|
 | map | Array of object | the mapping of replacing. |
-| map.*n*.from | `Array<string | boolean>` | the definition of from name. if this value is true, it treated as wildcard . |
-| map.*n*.to | `Array<string | boolean>` | the definition of to name. |
+| map.*n*.from | Array<string \| boolean> | the definition of from name. if this value is true, it treated as wildcard . |
+| map.*n*.to | Array<string \| boolean> | the definition of to name. |
 
 ## Example
 
