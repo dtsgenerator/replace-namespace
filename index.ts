@@ -36,7 +36,7 @@ interface Mapping<K> {
 
 // eslint-disable-next-line @typescript-eslint/require-await
 async function postProcess(
-    pluginContext: PluginContext
+    pluginContext: PluginContext,
 ): Promise<ts.TransformerFactory<ts.SourceFile> | undefined> {
     const config = pluginContext.option as Config;
     if (!checkConfig(config)) {
@@ -48,7 +48,7 @@ async function postProcess(
             const [inter, converted] = replaceNamespaceDeclaration(
                 context,
                 mapping,
-                root
+                root,
             );
             const result = replaceTypeReference(context, converted, inter);
             return checkRootLevelModifiers(result);
@@ -91,7 +91,7 @@ function loadConfig(config: Config): Mapping<string | boolean>[] {
                 local.push(map);
             } else if (map.value !== value) {
                 throw new Error(
-                    'Invalid configuration: must have the same value for the same key.'
+                    'Invalid configuration: must have the same value for the same key.',
                 );
             }
             local = map.children;
@@ -102,7 +102,7 @@ function loadConfig(config: Config): Mapping<string | boolean>[] {
 
 function getMapping<T extends string | boolean>(
     mapping: Mapping<T>[],
-    path: string[]
+    path: string[],
 ): Mapping<T>[] {
     let result = mapping;
     for (const p of path) {
@@ -119,7 +119,7 @@ function getMapping<T extends string | boolean>(
 
 function getConvertedChild(
     converted: Mapping<string> | undefined,
-    key: string
+    key: string,
 ): Mapping<string> | undefined {
     if (converted == null) {
         return undefined;
@@ -130,7 +130,7 @@ function setConverted(
     converted: Mapping<string>,
     path: string[],
     key: string,
-    value: MappingResult
+    value: MappingResult,
 ): void {
     let local = converted;
     path.forEach((key) => {
@@ -179,7 +179,7 @@ function convertNames(names: string[], converted: Mapping<string>): string[] {
 function replaceNamespaceDeclaration(
     context: ts.TransformationContext,
     mapping: Mapping<string | boolean>[],
-    root: ts.SourceFile
+    root: ts.SourceFile,
 ): [ts.SourceFile, Mapping<string>] {
     let path: string[] = [];
     const converted: Mapping<string> = {
@@ -189,7 +189,7 @@ function replaceNamespaceDeclaration(
     };
 
     function replaceModuleName(
-        statements: ReadonlyArray<ts.Statement>
+        statements: ReadonlyArray<ts.Statement>,
     ): ts.NodeArray<ts.Statement> {
         const maps = getMapping(mapping, path);
         const result: ts.Statement[] = [];
@@ -198,7 +198,7 @@ function replaceNamespaceDeclaration(
                 let dec = state;
                 const name = dec.name;
                 const map = maps.filter(
-                    (m) => m.key === true || m.key === name.text
+                    (m) => m.key === true || m.key === name.text,
                 );
                 if (map.length === 0) {
                     result.push(dec);
@@ -246,7 +246,7 @@ function replaceNamespaceDeclaration(
 
         return node;
     }
-    const inter = ts.visitNode(root, visit);
+    const inter = ts.visitNode(root, visit, ts.isSourceFile);
     return [inter, converted];
 }
 
@@ -257,14 +257,13 @@ function setName(node: ts.ModuleDeclaration, name: string): void {
 }
 function addChildModuleDeclaration(
     parent: ts.ModuleDeclaration,
-    name: string
+    name: string,
 ): ts.ModuleDeclaration {
     const newModule = ts.factory.createModuleDeclaration(
         undefined,
-        undefined,
         ts.factory.createIdentifier(name),
         parent.body,
-        parent.flags
+        parent.flags,
     );
     Object.assign<typeof parent, Partial<typeof parent>>(parent, {
         body: ts.factory.createModuleBlock([newModule]),
@@ -275,7 +274,7 @@ function addChildModuleDeclaration(
 function replaceTypeReference(
     context: ts.TransformationContext,
     mapping: Mapping<string>,
-    root: ts.SourceFile
+    root: ts.SourceFile,
 ): ts.SourceFile {
     function visit(node: ts.Node): ts.VisitResult<ts.Node> {
         node = ts.visitEachChild(node, visit, context);
@@ -293,7 +292,7 @@ function replaceTypeReference(
 
         return node;
     }
-    return ts.visitNode(root, visit);
+    return ts.visitNode(root, visit, ts.isSourceFile);
 }
 
 function flattenEntityName(name: ts.EntityName): string[] {
@@ -314,7 +313,7 @@ function packEntityName(names: readonly string[]): ts.EntityName {
     for (let i = 1; i < names.length; i++) {
         result = ts.factory.createQualifiedName(
             result,
-            ts.factory.createIdentifier(names[i])
+            ts.factory.createIdentifier(names[i]),
         );
     }
     return result;
@@ -322,7 +321,7 @@ function packEntityName(names: readonly string[]): ts.EntityName {
 
 function checkRootLevelModifiers(root: ts.SourceFile): ts.SourceFile {
     function replaceModifiers(
-        modifiers?: readonly ts.Modifier[]
+        modifiers?: readonly ts.Modifier[],
     ): ts.ModifiersArray {
         const result: ts.Modifier[] = [];
         let found = false;
@@ -339,7 +338,7 @@ function checkRootLevelModifiers(root: ts.SourceFile): ts.SourceFile {
         }
         if (!found) {
             result.push(
-                ts.factory.createModifier(ts.SyntaxKind.DeclareKeyword)
+                ts.factory.createModifier(ts.SyntaxKind.DeclareKeyword),
             );
         }
         return ts.factory.createNodeArray(result);
@@ -348,7 +347,7 @@ function checkRootLevelModifiers(root: ts.SourceFile): ts.SourceFile {
         const modifiers = ts.canHaveModifiers(state)
             ? ts.getModifiers(state)
             : undefined;
-        Object.assign<typeof state, Partial<typeof state>>(state, {
+        Object.assign(state, {
             modifiers: replaceModifiers(modifiers),
         });
     }
