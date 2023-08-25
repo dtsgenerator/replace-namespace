@@ -344,12 +344,12 @@ function checkRootLevelModifiers(root: ts.SourceFile): ts.SourceFile {
         return ts.factory.createNodeArray(result);
     }
     for (const state of root.statements) {
-        const modifiers = ts.canHaveModifiers(state)
-            ? ts.getModifiers(state)
-            : undefined;
-        Object.assign(state, {
-            modifiers: replaceModifiers(modifiers),
-        });
+        if (ts.canHaveModifiers(state)) {
+            const modifiers = ts.getModifiers(state);
+            Object.assign<typeof state, Partial<typeof state>>(state, {
+                modifiers: replaceModifiers(modifiers),
+            });
+        }
     }
     return root;
 }
