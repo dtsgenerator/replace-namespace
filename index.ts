@@ -5,9 +5,9 @@ interface Replacer {
     to: string[];
 }
 
-type Config = {
+interface Config {
     map: Replacer[];
-};
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const packageJson: {
@@ -38,7 +38,7 @@ interface Mapping<K> {
 async function postProcess(
     pluginContext: PluginContext,
 ): Promise<ts.TransformerFactory<ts.SourceFile> | undefined> {
-    const config = pluginContext.option as Config;
+    const config = pluginContext.option as unknown as Config;
     if (!checkConfig(config)) {
         return undefined;
     }
@@ -189,7 +189,7 @@ function replaceNamespaceDeclaration(
     };
 
     function replaceModuleName(
-        statements: ReadonlyArray<ts.Statement>,
+        statements: readonly ts.Statement[],
     ): ts.NodeArray<ts.Statement> {
         const maps = getMapping(mapping, path);
         const result: ts.Statement[] = [];

@@ -34,23 +34,23 @@
   },
   "homepage": "https://github.com/dtsgenerator/replace-namespace#readme",
   "devDependencies": {
-    "@dtsgenerator/eslint-config": "^0.6.5",
-    "@types/mocha": "^10.0.1",
-    "@types/node": "^16.18.46",
+    "@dtsgenerator/eslint-config": "^0.7.2",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^18.19.36",
     "cross-env": "^7.0.3",
-    "dtsgenerator": "^3.19.0",
-    "eslint": "^8.47.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^14.0.1",
-    "mocha": "^10.2.0",
-    "nyc": "^15.1.0",
-    "prettier": "^3.0.2",
-    "rimraf": "^5.0.1",
-    "ts-node": "^10.9.1"
+    "dtsgenerator": "^3.19.2",
+    "eslint": "^8.57.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "mocha": "^10.4.0",
+    "nyc": "^17.0.0",
+    "prettier": "^3.3.2",
+    "rimraf": "^5.0.7",
+    "ts-node": "^10.9.2"
   },
   "peerDependencies": {
-    "dtsgenerator": "^3.19.0",
-    "tslib": "^2.6.2"
+    "dtsgenerator": "^3.19.2",
+    "tslib": "^2.6.3"
   },
   "lint-staged": {
     "**/*.ts": [
