@@ -1,6 +1,6 @@
 {
   "name": "@dtsgenerator/replace-namespace",
-  "version": "1.7.0",
+  "version": "2.0.0",
   "description": "replace the namespace names",
   "main": "index.js",
   "engines": {
@@ -43,7 +43,7 @@
     "@types/mocha": "^10.0.6",
     "@types/node": "^22.20.1",
     "cross-env": "^10.1.0",
-    "dtsgenerator": "^3.19.2",
+    "dtsgenerator": "^4.0.0",
     "eslint": "^10.10.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.5.0",
@@ -55,7 +55,7 @@
     "typescript": "^6.0.3"
   },
   "peerDependencies": {
-    "dtsgenerator": "^3.19.2",
+    "dtsgenerator": "^4.0.0",
     "tslib": "^2.6.3"
   },
   "lint-staged": {
