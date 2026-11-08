@@ -14,7 +14,6 @@ const packageJson: {
     name: string;
     version: string;
     description: string;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
 } = require('./package.json');
 
 const replaceNamespace: Plugin = {
